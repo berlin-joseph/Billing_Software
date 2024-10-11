@@ -34,6 +34,7 @@ const productSchema = new mongoose.Schema(
     product_unit: {
       type: String,
       enum: ["Kg", "G", "L", "Ml"],
+      default: "",
     },
     product_meta: {
       barcode: { type: String, required: true },

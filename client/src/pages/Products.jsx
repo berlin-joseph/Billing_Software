@@ -1,108 +1,49 @@
 import React from "react";
-import CustomInput from "../components/custom/CustomInput";
-import CustomDropdown from "../components/custom/CustomDropdown";
-import CustomButton from "../components/custom/CustomButton";
-import { useCreateProductMutation } from "../Redux/slice/productSlice";
-import { useGetCategoryQuery } from "../Redux/slice/categorySlice";
-import { message } from "antd";
+import CustomButton from "../../../billing/src/renderer/src/components/custom/CustomButton";
+import { useGetProductsQuery } from "../Redux/slice/productSlice";
+import ProductsList from "../components/custom/products/ProductsList";
+import { Spin, message, Modal } from "antd";
+import AddProductsModel from "../components/custom/products/AddProductsModel";
+import { CloseCircleOutlined } from "@ant-design/icons";
 
 const Products = () => {
-  const [productName, setProductName] = React.useState("");
-  const [productPrice, setProductPrice] = React.useState("");
-  const [productCategory, setProductCategory] = React.useState("Select");
-  const [productQuantity, setProductQuantity] = React.useState("");
-  const [productUnit, setProductUnit] = React.useState("Select");
-  const [image_url, setImage_url] = React.useState("");
+  const { data: productData, isError, isLoading } = useGetProductsQuery();
 
-  const unit = [
-    { _id: "kg", name: "Kilo Gram" },
-    { _id: "G", name: "Gram" },
-    { _id: "L", name: "Liter" },
-  ];
+  const [productModalVisible, setProductModalVisible] = React.useState(false);
 
-  const [
-    createProduct,
-    {
-      isLoading: createLoading,
-      isError: createError,
-      isSuccess: createSuccess,
-    },
-  ] = useCreateProductMutation();
-
-  const { data: categoryData, refetch: refetchCategory } =
-    useGetCategoryQuery();
-
-  console.log(categoryData?.data, "categoryData");
-  const data = categoryData?.data ?? [];
-
-  const handleClick = async () => {
-    try {
-      const addResponse = await createProduct({
-        productName,
-        productPrice,
-        productCategory,
-        productQuantity,
-        productUnit,
-        image_url,
-      });
-
-      if (addResponse?.data?.status === true) {
-        message.success(addResponse?.data?.message);
-      } else if (addResponse?.error?.data?.status === false) {
-        message.warning(addResponse?.error?.data?.message);
-      }
-    } catch (error) {
-      console.log(error);
+  // Handle potential error state
+  React.useEffect(() => {
+    if (isError) {
+      message.error("Failed to fetch products.");
     }
+  }, [isError]);
+
+  const showAddProductModal = () => {
+    setProductModalVisible(true);
   };
 
-  const dropdownCategoryChange = (value) => {
-    setProductCategory(value);
-  };
-
-  const dropdownUnitChange = (value) => {
-    setProductUnit(value);
+  const handleModalClose = () => {
+    setProductModalVisible(false);
   };
 
   return (
-    <div className="w-[99%] bg-white py-10 px-5 flex justify-center ml-[1%]">
-      <div className="w-full max-w-4xl bg-gray-50 shadow-md rounded-lg p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <CustomInput
-            placeholder={"Name"}
-            type={"text"}
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-          />
-          <CustomInput
-            placeholder={"Price"}
-            type={"number"}
-            value={productPrice}
-            onChange={(e) => setProductPrice(e.target.value)}
-          />
-          <CustomInput
-            placeholder={"Quantity"}
-            type={"number"}
-            value={productQuantity}
-            onChange={(e) => setProductQuantity(e.target.value)}
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <CustomDropdown
-            data={data}
-            value={productCategory}
-            onChange={dropdownCategoryChange}
-          />
-          <CustomDropdown
-            data={unit}
-            value={productUnit}
-            onChange={dropdownUnitChange}
-          />
-        </div>
-        <div className="flex justify-end">
-          <CustomButton button={"Add"} onClick={handleClick} />
-        </div>
+    <div className="bg-white h-screen ml-[1%] p-[3%]">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold mb-6">Products List</h1>
+        <CustomButton button={"Add Products"} onClick={showAddProductModal} />
       </div>
+
+      <div className="py-5">
+        <ProductsList data={productData?.data ?? []} />
+      </div>
+
+      <Modal
+        visible={productModalVisible}
+        onCancel={handleModalClose}
+        footer={null}
+      >
+        <AddProductsModel onClose={handleModalClose} />
+      </Modal>
     </div>
   );
 };
