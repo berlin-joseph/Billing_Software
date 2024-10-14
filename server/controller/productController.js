@@ -11,6 +11,7 @@ exports.createProduct = async (req, res) => {
       product_brand,
       product_sku,
       barcode,
+      product_unit,
     } = req.body;
 
     const existingProduct = await productModel.findOne({ product_title });
@@ -30,6 +31,7 @@ exports.createProduct = async (req, res) => {
       product_brand,
       product_sku,
       product_meta: { barcode },
+      product_unit,
     });
 
     res.status(201).json({

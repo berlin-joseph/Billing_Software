@@ -1,17 +1,19 @@
 import React from "react";
 import CustomButton from "../../../billing/src/renderer/src/components/custom/CustomButton";
-import { useGetProductsQuery } from "../Redux/slice/productSlice";
 import ProductsList from "../components/custom/products/ProductsList";
-import { Spin, message, Modal } from "antd";
+import { message, Modal, Spin } from "antd";
 import AddProductsModel from "../components/custom/products/AddProductsModel";
-import { CloseCircleOutlined } from "@ant-design/icons";
+import { useGetProductsQuery } from "../Redux/Api/productApi";
 
 const Products = () => {
-  const { data: productData, isError, isLoading } = useGetProductsQuery();
-
+  const {
+    data: productData,
+    isError,
+    isLoading,
+    refetch,
+  } = useGetProductsQuery();
   const [productModalVisible, setProductModalVisible] = React.useState(false);
 
-  // Handle potential error state
   React.useEffect(() => {
     if (isError) {
       message.error("Failed to fetch products.");
@@ -24,6 +26,7 @@ const Products = () => {
 
   const handleModalClose = () => {
     setProductModalVisible(false);
+    refetch();
   };
 
   return (
@@ -34,7 +37,11 @@ const Products = () => {
       </div>
 
       <div className="py-5">
-        <ProductsList data={productData?.data ?? []} />
+        {isLoading ? (
+          <Spin />
+        ) : (
+          <ProductsList data={productData?.data ?? []} refetch={refetch} />
+        )}
       </div>
 
       <Modal
