@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
     },
     refresh_token: {
       type: String,
-      required: true,
+      default: "",
     },
     user_role: {
       type: String,

@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
-const JWT_SECRET = "your_jwt_secret";
 
 // Create User
 exports.createUser = async (req, res) => {
