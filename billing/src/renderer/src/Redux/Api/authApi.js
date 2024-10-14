@@ -13,8 +13,15 @@ export const authApi = createApi({
         method: 'POST',
         body: { user_mobile: mobile, user_password: password }
       })
+    }),
+    verifyToken: build.mutation({
+      query: (token) => ({
+        url: 'users/verify',
+        method: 'POST',
+        body: { token }
+      })
     })
   })
 })
 
-export const { useLoginMutation } = authApi
+export const { useLoginMutation, useVerifyTokenMutation } = authApi

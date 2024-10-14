@@ -29,7 +29,7 @@ const Auth = () => {
       } else {
         message.success('Login successful!')
         localStorage.setItem('token_login', response?.data?.token)
-        navigate('/dashboard')
+        navigate('/home')
       }
     } catch (err) {
       console.error('Login Error:', err)
