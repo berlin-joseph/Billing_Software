@@ -2,9 +2,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import base_url from '../constants/constants'
 
 export const orderApi = createApi({
-  reducerPath: 'orderApi',
+  reducerPath: "orderApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: base_url
+    baseUrl: base_url,
   }),
   endpoints: (build) => ({
     createOrder: build.mutation({
@@ -16,10 +16,10 @@ export const orderApi = createApi({
         user_name,
         user_mobile,
         user_email,
-        payment_type
+        payment_type,
       }) => ({
-        url: 'orders',
-        method: 'POST',
+        url: "orders",
+        method: "POST",
         body: {
           order_items,
           total_price,
@@ -28,11 +28,16 @@ export const orderApi = createApi({
           user_name,
           user_mobile,
           user_email,
-          payment_type
-        }
-      })
-    })
-  })
-})
+          payment_type,
+        },
+      }),
+    }),
+    getOrders: build.query({
+      query: () => ({
+        url: "orders",
+      }),
+    }),
+  }),
+});
 
-export const { useCreateOrderMutation } = orderApi
+export const { useCreateOrderMutation, useGetOrdersQuery } = orderApi;

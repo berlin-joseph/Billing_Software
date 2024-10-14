@@ -67,3 +67,26 @@ exports.createOrder = async (req, res) => {
     });
   }
 };
+
+
+exports.getOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("order_items.product")
+      .populate("user");
+
+    if (orders) {
+      return res
+        .status(200)
+        .send({ status: true, success: true, data: orders });
+    }
+    return res
+      .status(400)
+      .send({ status: true, success: false, message: "Orders Not Available" });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: error.message,
+    });
+  }
+};
