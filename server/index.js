@@ -8,6 +8,7 @@ const connectDatabase = require("./db/db");
 const productRoute = require("./routes/productRoute");
 const categoryRoute = require("./routes/categoryRoute");
 const orderRoute = require("./routes/orderRoute");
+const userRoutes = require("./routes/userRoutes");
 
 //env config
 dotenv.config({ path: path.join(__dirname, ".", ".env") });
@@ -24,8 +25,9 @@ app.use(morgan("tiny"));
 connectDatabase();
 
 // Routes
-app.use("/", productRoute, categoryRoute, orderRoute);
+app.use("/", productRoute, categoryRoute, orderRoute, userRoutes);
 
+// server listen
 app.listen(process.env.PORT, () =>
   console.log(`Example app listening on port ${process.env.PORT}!`)
 );
