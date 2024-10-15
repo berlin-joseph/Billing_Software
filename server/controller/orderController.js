@@ -1,4 +1,5 @@
 const Order = require("../schema/orderSchema");
+const productModel = require("../schema/productSchema");
 const userModel = require("../schema/userSchema");
 
 exports.createOrder = async (req, res) => {
@@ -46,6 +47,18 @@ exports.createOrder = async (req, res) => {
       user: user._id,
       payment_type,
     });
+
+    if (newOrder) {
+      await Promise.all(
+        order_items.map(async (item) => {
+          const product = await productModel.findById(item.product);
+          if (product) {
+            product.product_stock -= item.product_quantity;
+            await product.save();
+          }
+        })
+      );
+    }
 
     return res.status(201).send({
       status: true,
