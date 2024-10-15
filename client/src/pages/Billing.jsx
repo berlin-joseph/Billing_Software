@@ -1,15 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useGetOrdersQuery } from "../Redux/Api/orderApi";
 import OrderTable from "../components/custom/orders/OrderTable";
-import CustomInvoice from "../components/custom/orders/OrdersInvoice";
 import { Modal } from "antd";
-import Invoice from "../components/custom/orders/CustomDownloadInvoice";
+import CustomInvoice from "../components/custom/orders/OrdersInvoice";
+import Export from "../components/custom/orders/CustomPdfGenerate";
 
 const Billing = () => {
   const { data: orderData } = useGetOrdersQuery();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [pdf, setPdf] = useState(false);
+  const [pdfReady, setPdfReady] = useState(false);
 
   const handleEyeClick = (order) => {
     setSelectedOrder(order);
@@ -19,17 +19,10 @@ const Billing = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
     setSelectedOrder(null);
-    setPdf(false);
   };
 
   const handleDownloadClick = (order) => {
-    setPdf(true);
     setSelectedOrder(order);
-  };
-
-  const handleDownloadReady = () => {
-    handleCloseModal();
-    setPdf(false);
   };
 
   return (
@@ -54,13 +47,9 @@ const Billing = () => {
           />
         )}
       </Modal>
-
-      {pdf && (
-        <Invoice
-          invoiceData={selectedOrder}
-          onDownloadReady={handleDownloadReady}
-        />
-      )}
+      <div className=" hidden">
+        <Export invoiceData={selectedOrder} />
+      </div>
     </div>
   );
 };
