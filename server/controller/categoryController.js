@@ -115,6 +115,9 @@ exports.updateCategory = async (req, res) => {
 exports.deleteCategory = async (req, res) => {
   try {
     const category = await categoryModel.findByIdAndDelete(req.params.id);
+
+    console.log(category);
+
     if (!category) {
       return res.status(404).send({
         status: false,
